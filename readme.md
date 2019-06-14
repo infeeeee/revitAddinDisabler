@@ -5,9 +5,10 @@ Enable or disable Revit addins by name or all of them
 ## installation and usage
 
 - Download from [releases](https://github.com/infeeeee/revitAddinDisabler/releases/latest)
-- Just doubleclick the downloaded exe, it should ask for admin rights if UAC enabled.  
-- If it doesn't ask for it, close and rightclick -> run as admin
+- Rightclick -> run as admin
 - Follow the prompts in the console, select exit to exit
+
+You can make the file to always ask for admin rights if you rightclick -> Poperties -> Compatibility tab -> Run this program as an administrator
 
 ## installation details
 
