@@ -1,7 +1,7 @@
 {
   "name": "revitaddindisabler",
   "version": "1.0.0",
-  "description": "Disable and enable Revit addins",
+  "description": "Enable or disable Revit addins",
   "main": "apps.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -14,5 +14,13 @@
     "glob": "^7.1.4",
     "inquirer": "^6.3.1"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/infeeeee/revitAddinDisabler.git"
+  },
+  "bugs": {
+    "url": "https://github.com/infeeeee/revitAddinDisabler/issues"
+  },
+  "homepage": "https://github.com/infeeeee/revitAddinDisabler#readme"
 }
