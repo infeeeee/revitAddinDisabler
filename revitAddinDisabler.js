@@ -5,6 +5,7 @@ const child_process = require('child_process');
 
 var inquirer = require('inquirer');
 const glob = require("glob")
+const keypress = require('keypress');
 
 //Environment variables:
 const appdata = process.env.appdata
@@ -138,6 +139,7 @@ function selectoption(version, tabl, data) {
             type: 'list',
             name: 'addin',
             message: 'Select addin to disable',
+            pageSize: process.stdout.rows - 3,
             choices: tabl
         }
     ])
@@ -148,9 +150,17 @@ function selectoption(version, tabl, data) {
                     console.log()
                     console.log('Thanks for using this program!')
                     console.log('Please restart Revit if it\'s running')
-                    setTimeout(_=>{
-                        return
-                    },5000)
+                    console.log()
+                    console.log('Press any key to exit!')
+
+
+                    keypress(process.stdin)
+                    process.stdin.on('keypress', _=> {
+                        process.stdin.pause()
+                    });
+
+                    process.stdin.setRawMode(true);
+                    process.stdin.resume();
                     break;
 
                 case 'enabled':
@@ -215,6 +225,7 @@ function chAddin(version, addinnr, fullobj, forcedStatus, last) {
 
 getRevitVersions()
     .then(rv => {
+        console.log("=== revitAddinDisabler ===")
         console.log()
         console.log("In case of an error try running this program as Administrator!")
         console.log("Restart Revit after running this program! Or close it now.")
