@@ -121,26 +121,30 @@ function findAddinFiles(version) {
     selectoption(version, addinTable, addinObjects)
 }
 
-
-function selectoption(version, tabl, data) {
-    //version: selected revit version
-    //table: formatted names statuses and numbers
-    //data: all data
+/**
+ * 
+ * @param {String} version Revit verision
+ * @param {Array} tabl formatted names statuses and numbers
+ * @param {Array} data all data in an array of objects
+ * @param {Boolean} pathvis path is visible
+ */
+function selectoption(version, tabl, data, pathvis = false) {
     var pluschoices = [
         new inquirer.Separator(),
         { name: 'Enable all', value: 'enabled' },
         { name: 'Disable all', value: 'disabled' },
+        { name: 'Show/hide paths', value: 'showpath' },
         { name: 'Exit', value: 'exit' },
         new inquirer.Separator()
     ]
-    tabl = pluschoices.concat(tabl)
+    let tablExt = pluschoices.concat(tabl)
     inquirer.prompt([
         {
             type: 'list',
             name: 'addin',
             message: 'Select addin to disable',
             pageSize: process.stdout.rows - 3,
-            choices: tabl
+            choices: tablExt
         }
     ])
         .then(answers => {
@@ -155,7 +159,7 @@ function selectoption(version, tabl, data) {
 
 
                     keypress(process.stdin)
-                    process.stdin.on('keypress', _=> {
+                    process.stdin.on('keypress', _ => {
                         process.stdin.pause()
                     });
 
@@ -171,6 +175,21 @@ function selectoption(version, tabl, data) {
                             last = true
                         }
                         chAddin(version, i, data, answers.addin, last)
+                    }
+                    break;
+                case 'showpath':
+                    if (pathvis) {
+                        for (let i = 0; i < tabl.length; i++) {
+                            tabl[i].name = tabl[i].origname
+                        }
+                        selectoption(version, tabl, data, false)
+                    } else {
+                        for (let i = 0; i < tabl.length; i++) {
+                            tabl[i].origname = tabl[i].name
+                            tabl[i].name = tabl[i].name + "   " + data[i].path
+                            
+                        }
+                        selectoption(version, tabl, data, true)
                     }
                     break;
 

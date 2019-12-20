@@ -1,6 +1,6 @@
 {
   "name": "revitaddindisabler",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Enable or disable Revit addins",
   "main": "apps.js",
   "scripts": {
