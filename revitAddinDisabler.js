@@ -49,9 +49,8 @@ function findAddinFiles(version) {
     //create addin folder's paths
     addinpath[0] = path.join(appdata, '\\Autodesk\\Revit\\Addins', version)
     addinpath[1] = path.join('C:\\ProgramData\\Autodesk\\Revit\\Addins', version)
-    addinpath[2] = path.join('C:\\Program Files\\Autodesk\\', 'Revit' + version, 'AddIns')
-
-    //find addin files not in ApplicationPlugins
+    
+    //find addin files in addinpaths
     for (let i = 0; i < addinpath.length; i++) {
         const element = addinpath[i];
         var f = glob.sync(element + '/*.addin*')
@@ -66,6 +65,11 @@ function findAddinFiles(version) {
     //find not version specific plugins in ApplicationPlugins
     var h = glob.sync(addinRoot + '/**/!(20)??/*.addin*')
     addinFiles = addinFiles.concat(h)
+
+    //find addins in program files subfolders
+    var programfilesAddins = 'C:\\Program Files\\Autodesk\\Revit ' + version + '\\AddIns\\'
+    var i = glob.sync(programfilesAddins + '/**/*.addin*')
+    addinFiles = addinFiles.concat(i)
 
     //create lists
     var addinList = [] //all data, it will be converted to objects after sort
