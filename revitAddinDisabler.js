@@ -203,14 +203,16 @@ function selectoption(version, tabl, data, pathvis = false) {
             }
         })
 }
-
+/**
+ * change addin to disabled or enabled
+ * @param {string} version Revit version
+ * @param {number} addinnr Number of addin in the list
+ * @param {Array} fullobj All addins as objects
+ * @param {*} forcedStatus "enabled"|"disabled"|false: force enable/disable all
+ * @param {boolean} last Last element in enable/disable all
+ */
 function chAddin(version, addinnr, fullobj, forcedStatus, last) {
-    //change to disabled or enabled
-    //version: revitversion
-    //addinnr: number of addin in the list
-    //fullobj: all addins as objects
-    //forcedStatus: "enabled"|"disabled"|false: force for enable/disable all
-    //last: boolean: last element in enable/disable all
+
     var currObj = fullobj[addinnr]
     var np
     var targetStatus
