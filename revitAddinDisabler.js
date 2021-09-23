@@ -10,6 +10,10 @@ const keypress = require('keypress');
 //Environment variables:
 const appdata = process.env.appdata
 
+// debug logging
+const util = require('util');
+const debugapp = util.debuglog('debugapp');
+
 
 /* -------------------------------------------------------------------------- */
 /*                                  FUNCTIONS                                 */
@@ -29,8 +33,11 @@ function getRevitVersions() {
             const prname = pr[pr.length - 1]
             const prarr = prname.split(" ")
 
+            debugapp('Checking program:', prname)
+
             // find version numbers
             if (prarr[0] == "Revit" && prarr.length == 2) {
+                debugapp('Found Revit:', prarr[0], prarr[1])
                 revitversions.push(prarr[1])
             }
         }

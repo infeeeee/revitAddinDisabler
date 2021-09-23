@@ -40,6 +40,17 @@ npm install -g pkg
 npm run build
 ```
 
+#### Enable verbose log, debugging
+
+Start with environment variable `NODE_DEBUG` set to `debug*`.
+
+Example on Windows:
+
+```
+SET NODE_DEBUG=debug*
+npm start
+```
+
 ## troubleshhoting
 
 - Make sure you run it as admin!!
