@@ -13,6 +13,7 @@ const appdata = process.env.appdata
 // debug logging
 const util = require('util');
 const debugapp = util.debuglog('debugapp');
+const debugstart = util.debuglog('debugstart');
 
 
 /* -------------------------------------------------------------------------- */
@@ -24,23 +25,38 @@ function getRevitVersions() {
     return new Promise((resolve, reject) => {
 
         //get installed programs
-        var installedPrograms = child_process.spawnSync('reg', ['query HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall'], { shell: true }).output.toString().split("\r\n")
+        var installedPrograms = child_process.spawnSync('reg', ['query HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall /s'], {
+            shell: true
+        }).output.toString().split("\r\n\r\n")
         var revitversions = []
+
+        debugstart(installedPrograms)
 
         //find revit
         for (let i = 0; i < installedPrograms.length; i++) {
-            const pr = installedPrograms[i].split("\\")
-            const prname = pr[pr.length - 1]
-            const prarr = prname.split(" ")
+            const programRegistry = installedPrograms[i].split("\r\n")
+            
+            // debugapp('Checking program:', programRegistry[0])
 
-            debugapp('Checking program:', prname)
+            //find DisplayName
+            for (let j = 0; j < programRegistry.length; j++) {
+                const registryValue = programRegistry[j];
+                if (registryValue.indexOf('DisplayName') > 0) {
 
-            // find version numbers
-            if (prarr[0] == "Revit" && prarr.length == 2) {
-                debugapp('Found Revit:', prarr[0], prarr[1])
-                revitversions.push(prarr[1])
-            }
+                    const programNameValue = registryValue.split('   ')
+                    const programName = programNameValue[programNameValue.length - 1]
+                    debugapp('program name:', programName)
+
+                    const revitRegex = new RegExp('^ *Revit \\d{4}$');
+                    debugapp(revitRegex.test(programName))
+                    if (revitRegex.test(programName)) {
+                        const programNameArray = programName.split(' ')
+                        revitversions.push(programNameArray[programNameArray.length - 1])
+                    }
+                }
+            }            
         }
+        revitversions.sort()
         resolve(revitversions);
     })
 }
@@ -56,7 +72,7 @@ function findAddinFiles(version) {
     //create addin folder's paths
     addinpath[0] = path.join(appdata, '\\Autodesk\\Revit\\Addins', version)
     addinpath[1] = path.join('C:\\ProgramData\\Autodesk\\Revit\\Addins', version)
-    
+
     //find addin files in addinpaths
     for (let i = 0; i < addinpath.length; i++) {
         const element = addinpath[i];
@@ -142,22 +158,32 @@ function findAddinFiles(version) {
 function selectoption(version, tabl, data, pathvis = false) {
     var pluschoices = [
         new inquirer.Separator(),
-        { name: 'Enable all', value: 'enabled' },
-        { name: 'Disable all', value: 'disabled' },
-        { name: 'Show/hide paths', value: 'showpath' },
-        { name: 'Exit', value: 'exit' },
+        {
+            name: 'Enable all',
+            value: 'enabled'
+        },
+        {
+            name: 'Disable all',
+            value: 'disabled'
+        },
+        {
+            name: 'Show/hide paths',
+            value: 'showpath'
+        },
+        {
+            name: 'Exit',
+            value: 'exit'
+        },
         new inquirer.Separator()
     ]
     let tablExt = pluschoices.concat(tabl)
-    inquirer.prompt([
-        {
+    inquirer.prompt([{
             type: 'list',
             name: 'addin',
             message: 'Select addin to disable',
             pageSize: process.stdout.rows - 3,
             choices: tablExt
-        }
-    ])
+        }])
         .then(answers => {
             // console.log(answers.addin)
             switch (answers.addin) {
@@ -198,7 +224,7 @@ function selectoption(version, tabl, data, pathvis = false) {
                         for (let i = 0; i < tabl.length; i++) {
                             tabl[i].origname = tabl[i].name
                             tabl[i].name = tabl[i].name + "   " + data[i].path
-                            
+
                         }
                         selectoption(version, tabl, data, true)
                     }
@@ -263,14 +289,12 @@ getRevitVersions()
         console.log("Restart Revit after running this program! Or close it now.")
         console.log()
         //ask for revit version
-        return inquirer.prompt([
-            {
-                type: 'list',
-                name: 'version',
-                message: 'Revit version:',
-                choices: rv
-            }
-        ])
+        return inquirer.prompt([{
+            type: 'list',
+            name: 'version',
+            message: 'Revit version:',
+            choices: rv
+        }])
 
     })
     .then(answers => {
