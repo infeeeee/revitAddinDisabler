@@ -43,10 +43,12 @@ function getRevitVersions() {
                 const registryValue = programRegistry[j];
                 if (registryValue.indexOf('DisplayName') > 0) {
 
+                    //Find program
                     const programNameValue = registryValue.split('   ')
                     const programName = programNameValue[programNameValue.length - 1]
                     debugapp('program name:', programName)
 
+                    // Check if it's Revit
                     const revitRegex = new RegExp('^ *Revit \\d{4}$');
                     debugapp(revitRegex.test(programName))
                     if (revitRegex.test(programName)) {
