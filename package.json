@@ -11,7 +11,7 @@
   "author": "infeeeee",
   "license": "MIT",
   "dependencies": {
-    "glob": "^7.1.4",
+    "glob": "^13.0.6",
     "inquirer": "^6.3.1",
     "keypress": "^0.2.1"
   },
